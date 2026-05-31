@@ -33,7 +33,7 @@ function App() {
         {/* 헤더 이름 수정: 업무 가이드 -> ASAP 업무 가이드 */}
         <header className={`header ${hideHeader ? 'hidden' : ''}`}>
           <Link to="/" className="home-link">
-            <h1>ASAP 업무 가이드</h1>
+            <h1>ASAP 업무 가이드1</h1>
           </Link>
         </header>
 
