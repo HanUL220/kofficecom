@@ -1,7 +1,7 @@
 {
   "name": "kofficecom",
   "version": "0.1.0",
-  "homepage": "http://kofficecom.kro.kr",
+  "homepage": "http://asapguide.kro.kr",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
