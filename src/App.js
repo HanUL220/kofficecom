@@ -1,20 +1,39 @@
+import { useState, useEffect } from 'react'; // useState, useEffect 추가
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Main from './Main';
 import Guide from './Guide';
 import WindowsSetup from './WindowsSetup';
 import GuidePaper from './GuidePaper';
-import Cafe from './Cafe'; // 카페 파일 불러오기!
+import Cafe from './Cafe';
 import './App.css';
 
 function App() {
+  const [hideHeader, setHideHeader] = useState(false);
+  let lastScrollY = 0;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        setHideHeader(true); // 스크롤 내리면 숨김
+      } else {
+        setHideHeader(false); // 올리면 나타남
+      }
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    // 💡 딱 이 부분만 수정되었습니다!
     <BrowserRouter>
       <div className="mobile-container">
         
-        <header className="header">
+        {/* 헤더 이름 수정: 업무 가이드 -> ASAP 업무 가이드 */}
+        <header className={`header ${hideHeader ? 'hidden' : ''}`}>
           <Link to="/" className="home-link">
-            <h1>업무 가이드</h1>
+            <h1>ASAP 업무 가이드</h1>
           </Link>
         </header>
 
@@ -23,7 +42,7 @@ function App() {
           <Route path="/guide" element={<Guide />} />
           <Route path="/windows" element={<WindowsSetup />} />
           <Route path="/paper" element={<GuidePaper />} />
-          <Route path="/cafe" element={<Cafe />} /> {/* 카페 길 추가! */}
+          <Route path="/cafe" element={<Cafe />} />
         </Routes>
         
       </div>
