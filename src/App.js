@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'; // useState, useEffect 추가
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import Main from './Main';
-import Guide from './Guide';
-import WindowsSetup from './WindowsSetup';
-import GuidePaper from './GuidePaper';
-import Cafe from './Cafe';
+import Main from './pages/Main';
+import Guide from './pages/Guide';
+import WindowsSetup from './pages/WindowsSetup';
+import GuidePaper from './pages/GuidePaper';
+import Cafe from './pages/Cafe';
 import './App.css';
 
 function App() {
