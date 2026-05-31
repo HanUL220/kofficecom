@@ -8,7 +8,8 @@ import './App.css';
 
 function App() {
   return (
-    <BrowserRouter>
+    // 💡 딱 이 부분만 수정되었습니다!
+    <BrowserRouter basename="/kofficecom">
       <div className="mobile-container">
         
         <header className="header">
