@@ -10,7 +10,7 @@ body {
 /* 스마트폰 및 반응형 컨테이너 */
 .mobile-container {
   width: 100vw;       /* 모바일 폰 화면에서는 가로 꽉 차게 */
-  max-width: 430px;   /* PC에서 볼 때는 최대 크기를 스마트폰 규격으로 고정 */
+  max-width: 500px; 
   min-height: 100vh;
   background-color: #ffffff;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.08);
