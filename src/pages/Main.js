@@ -45,6 +45,15 @@ function Main() {
           </div>
         </div>
 
+        {/* 새로 추가된 노트북 대여 메뉴 카드 */}
+        <div className="menu-card" onClick={() => navigate('/notebook')}>
+          <div className="menu-icon" style={{backgroundColor: '#e3f2fd'}}>📋</div>
+          <div className="menu-text">
+            <h3>임직원 노트북 대여</h3>
+            <p>대여 현황 조회 및 등록/반납 관리</p>
+          </div>
+        </div>
+
       </div>
     </main>
   );

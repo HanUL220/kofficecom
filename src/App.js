@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'; // useState, useEffect 추가
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Main from './pages/Main';
 import Guide from './pages/Guide';
 import WindowsSetup from './pages/WindowsSetup';
 import GuidePaper from './pages/GuidePaper';
 import Cafe from './pages/Cafe';
+import NotebookRental from './pages/NotebookRental'; // 노트북 페이지 불러오기
 import './App.css';
 
 function App() {
@@ -30,19 +31,21 @@ function App() {
     <BrowserRouter>
       <div className="mobile-container">
         
-        {/* 헤더 이름 수정: 업무 가이드 -> ASAP 업무 가이드 */}
+        {/* 상단 헤더 */}
         <header className={`header ${hideHeader ? 'hidden' : ''}`}>
           <Link to="/" className="home-link">
             <h1>ASAP 업무 가이드</h1>
           </Link>
         </header>
 
+        {/* 페이지 라우팅 */}
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/guide" element={<Guide />} />
           <Route path="/windows" element={<WindowsSetup />} />
           <Route path="/paper" element={<GuidePaper />} />
           <Route path="/cafe" element={<Cafe />} />
+          <Route path="/notebook" element={<NotebookRental />} /> {/* 노트북 페이지 경로 추가 */}
         </Routes>
         
       </div>

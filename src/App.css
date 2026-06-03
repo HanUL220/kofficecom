@@ -1,7 +1,7 @@
 /* 기본 세팅 */
 body {
   margin: 0;
-  background-color: #f4f6f8; /* 배경을 살짝 더 차분한 쿨그레이로 */
+  background-color: #f4f6f8;
   display: flex;
   justify-content: center;
   font-family: 'Pretendard', -apple-system, sans-serif;
@@ -9,16 +9,17 @@ body {
 
 /* 스마트폰 및 반응형 컨테이너 */
 .mobile-container {
-  width: 100vw;       /* 모바일 폰 화면에서는 가로 꽉 차게 */
-  max-width: 500px; 
+  width: 100vw;
+  max-width: 500px; /* 기본적으로 모든 페이지는 500px 유지 */
   min-height: 100vh;
   background-color: #ffffff;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
+  transition: max-width 0.3s ease; /* 화면 넓어질 때 부드럽게 */
 }
 
-/* 상단 고정 헤더 (파란색 -> 세련된 다크 네이비/차콜) */
+/* 상단 고정 헤더 */
 .header {
   background-color: #2c3e50; 
   text-align: center;
@@ -116,7 +117,7 @@ body {
   color: #868e96;
 }
 
-/* 상황별 컬러 배지 (눈 안 아프게 파스텔 톤다운) */
+/* 상황별 컬러 배지 */
 .badge {
   display: inline-block;
   padding: 4px 8px;
@@ -127,8 +128,8 @@ body {
 }
 
 .speak { background-color: #f1f3f5; color: #495057; }
-.action { background-color: #e6fcf5; color: #0ca678; } /* 행동은 산뜻한 민트 */
-.system { background-color: #f3f0ff; color: #6741d9; } /* 전산은 부드러운 보라 */
+.action { background-color: #e6fcf5; color: #0ca678; }
+.system { background-color: #f3f0ff; color: #6741d9; }
 .warn { background-color: #fff3cd; color: #856404; }
 .alert { background-color: #ffe3e3; color: #c92a2a; }
 
@@ -164,43 +165,6 @@ body {
 /* 부드러운 스크롤 */
 html {
   scroll-behavior: smooth; 
-}
-
-/* 빠른 이동 내비게이션 */
-.quick-nav {
-  display: flex;
-  overflow-x: auto;
-  gap: 8px;
-  padding-bottom: 12px;
-  margin-bottom: 12px;
-  scrollbar-width: none;
-}
-
-.quick-nav::-webkit-scrollbar {
-  display: none; 
-}
-
-.nav-chip {
-  background-color: #ffffff;
-  color: #495057;
-  border: 1px solid #dee2e6;
-  border-radius: 20px;
-  padding: 8px 16px;
-  font-size: 13.5px;
-  font-weight: 700;
-  white-space: nowrap;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.nav-chip:active, .nav-chip:focus {
-  background-color: #2c3e50;
-  color: #ffffff;
-  border-color: #2c3e50;
-}
-
-.guide-section {
-  scroll-margin-top: 75px;
 }
 
 /* 메인 대시보드 디자인 */
@@ -292,7 +256,7 @@ html {
 .situation {
   font-size: 12.5px;
   font-weight: 800;
-  color: #0ca678; /* 민트 포인트 */
+  color: #0ca678; 
   margin-bottom: 6px;
 }
 
@@ -343,7 +307,7 @@ html {
 .menu-price {
   font-size: 16px;
   font-weight: 800;
-  color: #0ca678; /* 가격에 민트색 포인트 */
+  color: #0ca678; 
   display: flex;
   gap: 15px;
   justify-content: flex-end;
@@ -359,3 +323,223 @@ html {
 .badge.hotice { background-color: #f1f3f5; color: #868e96; font-weight: 600; }
 .badge.ice { background-color: #e6fcf5; color: #0ca678; }
 .badge.new { background-color: #fff3cd; color: #d97706; font-style: italic; }
+
+/* =========================================
+   노트북 페이지만을 위한 PC 반응형 처리
+========================================= */
+
+/* 노트북 페이지(notebook-content)가 렌더링 되었을 때만 컨테이너 넓이를 1000px로 확장 */
+@media (min-width: 768px) {
+  .mobile-container:has(.notebook-content) {
+    max-width: 1000px;
+  }
+}
+
+/* 노트북 테이블 전용 스타일 */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto; /* 모바일에서 가로 스크롤 허용 */
+  -webkit-overflow-scrolling: touch;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f3f5;
+  margin-top: 10px;
+}
+
+.notebook-table {
+  width: 100%;
+  min-width: 700px; /* 좁은 화면에서도 표가 찌그러지지 않고 스크롤되도록 */
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 13px;
+}
+
+.notebook-table th {
+  background-color: #f8f9fa;
+  color: #495057;
+  padding: 12px;
+  font-weight: 700;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+}
+
+.notebook-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f3f5;
+  color: #343a40;
+  vertical-align: middle;
+}
+
+/* 노트북 상태 버튼 스타일 */
+.btn-action {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.btn-action:hover { opacity: 0.8; }
+.btn-register { background-color: #e6fcf5; color: #0ca678; } /* 대여/예약 등록 */
+.btn-return { background-color: #ffe3e3; color: #c92a2a; } /* 반납 완료 */
+.btn-move { background-color: #f3f0ff; color: #6741d9; } /* 대여로 변경 */
+
+/* 모달(입력 팝업창) 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 24px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0px 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal-content h3 { margin-top: 0; color: #2c3e50; }
+.form-group { margin-bottom: 12px; text-align: left; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: #495057; margin-bottom: 4px; }
+.form-group input { width: 100%; padding: 10px; border: 1px solid #dee2e6; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
+.modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+.modal-actions button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+.btn-cancel { background-color: #f1f3f5; color: #495057; }
+.btn-submit { background-color: #2c3e50; color: white; }
+
+
+/* =========================================
+   추가/수정된 노트북 대여 스타일
+========================================= */
+
+/* 상단 타이틀과 우측 버튼 배치용 Flex */
+.rental-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 15px;
+  margin-top: 10px;
+}
+
+/* 표 안에서 수정 버튼 누를 때 나오는 입력창 스타일 */
+.edit-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.edit-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: inherit;
+  color: #495057;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: #2c3e50;
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.2);
+}
+
+/* 버튼 디자인 다듬기 */
+.btn-action {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.btn-action:hover { opacity: 0.8; }
+
+.btn-register { background-color: #2c3e50; color: #fff; } /* 우측상단 대여등록버튼 (눈에 띄게) */
+.btn-return { background-color: #ffe3e3; color: #c92a2a; } /* 반납 완료 */
+.btn-move { background-color: #e6fcf5; color: #0ca678; } /* 대여 전환 / 예약 등록 */
+.btn-submit { background-color: #2c3e50; color: white; } /* 모달/수정 저장 */
+.btn-cancel { background-color: #f1f3f5; color: #495057; } /* 모달/수정 취소 */
+
+/* 노트북 페이지(notebook-content)가 렌더링 되었을 때만 컨테이너 넓이를 1100px로 확장 */
+@media (min-width: 768px) {
+  .mobile-container:has(.notebook-content) {
+    max-width: 1100px;
+  }
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto; 
+  -webkit-overflow-scrolling: touch;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f3f5;
+  margin-top: 10px;
+}
+
+.notebook-table {
+  width: 100%;
+  min-width: 900px; /* 표 항목이 많아졌으므로 최소 너비를 늘림 */
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 13px;
+}
+
+.notebook-table th {
+  background-color: #f8f9fa;
+  color: #495057;
+  padding: 12px 8px;
+  font-weight: 700;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+}
+
+.notebook-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #f1f3f5;
+  color: #343a40;
+  vertical-align: middle;
+}
+
+/* History 테이블 필터 드롭다운 디자인 */
+.history-filter select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  background-color: white;
+  font-family: inherit;
+  font-size: 13px;
+  color: #495057;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+.history-filter select:focus {
+  border-color: #2c3e50;
+  box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.2);
+}
+
+/* History 삭제 버튼 디자인 */
+.btn-delete { 
+  background-color: #fff; 
+  color: #c92a2a; 
+  border: 1px solid #ffc9c9; 
+}
+.btn-delete:hover { 
+  background-color: #ffe3e3; 
+}
