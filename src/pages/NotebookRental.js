@@ -6,9 +6,9 @@ function NotebookRental() {
   const [notebooks, setNotebooks] = useState([]);
   const [history, setHistory] = useState([]);
   
-  // 💡 검색 및 필터 상태 관리
+  // 검색 및 필터 상태 관리
   const [historyFilter, setHistoryFilter] = useState('All');
-  const [searchName, setSearchName] = useState(''); // 이름 검색 상태 추가
+  const [searchName, setSearchName] = useState(''); 
   
   const [loading, setLoading] = useState(true);
 
@@ -149,10 +149,22 @@ function NotebookRental() {
       cancelButtonText: '취소'
     }).then(async (result) => {
       if (result.isConfirmed) {
+        
+        // 💡 무조건 대한민국 표준시(KST)로 정확한 오늘 날짜 구하기
+        const now = new Date();
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
+        const kst = new Date(utc + (9 * 60 * 60 * 1000));
+        const todayKST = `${kst.getFullYear()}-${String(kst.getMonth() + 1).padStart(2, '0')}-${String(kst.getDate()).padStart(2, '0')}`;
+
+        // 원래 반납일자가 비어있다면 오늘 날짜(KST)로 대체!
+        const finalReturnDate = notebook.current_return_date || todayKST;
+
         const { error: historyError } = await supabase.from('rental_history').insert([{
-          notebook_id: notebook.id, team: notebook.current_team, name: notebook.current_name,
+          notebook_id: notebook.id, 
+          team: notebook.current_team, 
+          name: notebook.current_name,
           rent_date: notebook.current_rent_date, 
-          return_date: notebook.current_return_date, 
+          return_date: finalReturnDate, // 처리된 반납일자 저장
           remark: notebook.current_remark
         }]);
         
@@ -228,13 +240,9 @@ function NotebookRental() {
 
   if (loading) return <div className="content">데이터를 불러오는 중입니다...</div>;
 
-  // 💡 검색어와 필터를 동시에 적용하는 로직
   const filteredHistory = history.filter(h => {
-    // 1. 기기 필터 조건 ('All'이거나 선택한 번호와 같거나)
     const matchFilter = historyFilter === 'All' || h.notebook_id === historyFilter;
-    // 2. 이름 검색 조건 (검색어가 비어있거나, 이름에 검색어가 포함되어 있거나)
     const matchName = searchName === '' || (h.name && h.name.includes(searchName));
-    
     return matchFilter && matchName;
   });
 
@@ -382,7 +390,6 @@ function NotebookRental() {
           <p style={{margin: 0, fontSize: '14px', color: '#868e96'}}>반납이 완료된 기기 내역 (최신순)</p>
         </div>
         
-        {/* 💡 검색어 입력칸과 기존 필터 드롭다운을 가로로 배치 */}
         <div className="history-filter" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <input 
             type="text" 
@@ -417,7 +424,6 @@ function NotebookRental() {
                 <tr key={h.id}>
                   <td><strong>{h.notebook_id}</strong></td>
                   <td>{h.team}</td>
-                  {/* 검색한 이름이 더 잘 보이도록 굵게(b 태그) 표시 */}
                   <td><b>{h.name}</b></td>
                   <td>{h.rent_date || '-'}</td>
                   <td style={{color: '#c92a2a', fontWeight: 'bold'}}>{h.return_date || '-'}</td>
