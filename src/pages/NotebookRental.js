@@ -5,14 +5,18 @@ import Swal from 'sweetalert2';
 function NotebookRental() {
   const [notebooks, setNotebooks] = useState([]);
   const [history, setHistory] = useState([]);
+  
+  // 💡 검색 및 필터 상태 관리
   const [historyFilter, setHistoryFilter] = useState('All');
+  const [searchName, setSearchName] = useState(''); // 이름 검색 상태 추가
+  
   const [loading, setLoading] = useState(true);
 
   // 모달(우측 상단 등록창) 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(''); 
   const [formData, setFormData] = useState({
-    id: '01', team: '', name: '', rent_date: '', return_date: '', expected_date: '', remark: ''
+    id: '01', team: '', name: '', rent_date: '', return_date: '', remark: ''
   });
 
   // 인라인 수정 상태 관리 (현재, 다음)
@@ -42,33 +46,30 @@ function NotebookRental() {
   ============================ */
   const openModal = (type) => {
     setModalType(type);
-    setFormData({ id: '01', team: '', name: '', rent_date: '', return_date: '', expected_date: '', remark: '' });
+    setFormData({ id: '01', team: '', name: '', rent_date: '', return_date: '', remark: '' });
     setIsModalOpen(true);
   };
 
   const handleModalChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleModalSubmit = async () => {
-    // 1. 필수값 체크
     if (!formData.team || !formData.name) {
       Swal.fire({ icon: 'warning', title: '입력 확인', text: '팀명과 성함은 필수 입력 항목입니다.', confirmButtonColor: '#2c3e50' });
       return;
     }
 
-    // 2. 💡 새로 추가된 핵심 방어 로직: 덮어쓰기 방지
     const targetNotebook = notebooks.find(n => n.id === formData.id);
     
     if (modalType === 'current' && targetNotebook?.current_name) {
-      Swal.fire({ icon: 'error', title: '등록 불가', text: `${formData.id}번 기기는 이미 대여 중`, confirmButtonColor: '#c92a2a' });
+      Swal.fire({ icon: 'error', title: '등록 불가', text: `${formData.id}번 기기는 이미 대여 중입니다.`, confirmButtonColor: '#c92a2a' });
       return;
     }
     
     if (modalType === 'next' && targetNotebook?.next_name) {
-      Swal.fire({ icon: 'error', title: '등록 불가', text: `${formData.id}번 기기는 이미 예약이 존재`, confirmButtonColor: '#c92a2a' });
+      Swal.fire({ icon: 'error', title: '등록 불가', text: `${formData.id}번 기기는 이미 예약이 존재합니다.`, confirmButtonColor: '#c92a2a' });
       return;
     }
 
-    // 3. 정상 저장 로직
     const prefix = modalType === 'current' ? 'current_' : 'next_';
     const updateData = {
       [`${prefix}team`]: formData.team,
@@ -77,7 +78,6 @@ function NotebookRental() {
       [`${prefix}return_date`]: formData.return_date || null,
       [`${prefix}remark`]: formData.remark || null,
     };
-    if (modalType === 'current') updateData.current_expected_date = formData.expected_date || null;
 
     const { error } = await supabase.from('notebooks').update(updateData).eq('id', formData.id);
     
@@ -98,7 +98,7 @@ function NotebookRental() {
     setEditFormData({
       current_team: notebook.current_team || '', current_name: notebook.current_name || '',
       current_rent_date: notebook.current_rent_date || '', current_return_date: notebook.current_return_date || '',
-      current_expected_date: notebook.current_expected_date || '', current_remark: notebook.current_remark || ''
+      current_remark: notebook.current_remark || ''
     });
   };
   const handleEditChange = (e) => setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
@@ -106,7 +106,7 @@ function NotebookRental() {
     const payload = {
       current_team: editFormData.current_team || null, current_name: editFormData.current_name || null,
       current_rent_date: editFormData.current_rent_date || null, current_return_date: editFormData.current_return_date || null,
-      current_expected_date: editFormData.current_expected_date || null, current_remark: editFormData.current_remark || null,
+      current_remark: editFormData.current_remark || null,
     };
     const { error } = await supabase.from('notebooks').update(payload).eq('id', id);
     if (error) Swal.fire({ icon: 'error', title: '오류', text: '저장 중 오류가 발생했습니다.', confirmButtonColor: '#c92a2a' });
@@ -152,8 +152,7 @@ function NotebookRental() {
         const { error: historyError } = await supabase.from('rental_history').insert([{
           notebook_id: notebook.id, team: notebook.current_team, name: notebook.current_name,
           rent_date: notebook.current_rent_date, 
-          original_return_date: notebook.current_return_date, 
-          return_date: new Date().toISOString().split('T')[0], 
+          return_date: notebook.current_return_date, 
           remark: notebook.current_remark
         }]);
         
@@ -164,7 +163,7 @@ function NotebookRental() {
 
         await supabase.from('notebooks').update({
           current_team: null, current_name: null, current_rent_date: null, 
-          current_return_date: null, current_expected_date: null, current_remark: null
+          current_return_date: null, current_remark: null
         }).eq('id', notebook.id);
         
         Swal.fire('반납 완료!', '', 'success');
@@ -175,7 +174,7 @@ function NotebookRental() {
 
   const handleMoveToCurrent = (notebook) => {
     if (notebook.current_name) {
-      Swal.fire({ icon: 'warning', title: '전환 불가', text: '현재 대여자가 반납을 완료해야 다음 예약을 대여로 전환 가능', confirmButtonColor: '#c92a2a' });
+      Swal.fire({ icon: 'warning', title: '전환 불가', text: '현재 대여자가 반납을 완료해야 대여로 전환 가능합니다.', confirmButtonColor: '#c92a2a' });
       return;
     }
 
@@ -193,11 +192,11 @@ function NotebookRental() {
         await supabase.from('notebooks').update({
           current_team: notebook.next_team, current_name: notebook.next_name,
           current_rent_date: notebook.next_rent_date, current_return_date: notebook.next_return_date,
-          current_expected_date: null, current_remark: notebook.next_remark,
+          current_remark: notebook.next_remark,
           next_team: null, next_name: null, next_rent_date: null, next_return_date: null, next_remark: null
         }).eq('id', notebook.id);
         
-        Swal.fire('전환 완료!', '성공적으로 대여 전환되었습니다.', 'success');
+        Swal.fire('전환 완료!', '', 'success');
         fetchData();
       }
     });
@@ -229,7 +228,15 @@ function NotebookRental() {
 
   if (loading) return <div className="content">데이터를 불러오는 중입니다...</div>;
 
-  const filteredHistory = historyFilter === 'All' ? history : history.filter(h => h.notebook_id === historyFilter);
+  // 💡 검색어와 필터를 동시에 적용하는 로직
+  const filteredHistory = history.filter(h => {
+    // 1. 기기 필터 조건 ('All'이거나 선택한 번호와 같거나)
+    const matchFilter = historyFilter === 'All' || h.notebook_id === historyFilter;
+    // 2. 이름 검색 조건 (검색어가 비어있거나, 이름에 검색어가 포함되어 있거나)
+    const matchName = searchName === '' || (h.name && h.name.includes(searchName));
+    
+    return matchFilter && matchName;
+  });
 
   return (
     <main className="content notebook-content">
@@ -252,7 +259,6 @@ function NotebookRental() {
               <th>기기번호</th>
               <th>현재 정보</th>
               <th>대여일 / 반납일</th>
-              <th>반납 예정일</th>
               <th>비고</th>
               <th>상태 관리</th>
               <th>다음 예약 정보</th>
@@ -272,6 +278,7 @@ function NotebookRental() {
                   <td>
                     {isEditing ? (
                       <div className="edit-cell">
+                        <span style={{fontSize:'11px'}}>팀명/성함</span>
                         <input name="current_team" placeholder="팀명" value={editFormData.current_team} onChange={handleEditChange} className="edit-input" />
                         <input name="current_name" placeholder="이름" value={editFormData.current_name} onChange={handleEditChange} className="edit-input" />
                       </div>
@@ -282,29 +289,29 @@ function NotebookRental() {
                   <td>
                     {isEditing ? (
                       <div className="edit-cell">
-                        <span style={{fontSize:'11px'}}>대여</span>
+                        <span style={{fontSize:'11px'}}>대여/반납 일정</span>
                         <input type="date" max="9999-12-31" name="current_rent_date" value={editFormData.current_rent_date} onChange={handleEditChange} className="edit-input" />
-                        <span style={{fontSize:'11px'}}>반납</span>
                         <input type="date" max="9999-12-31" name="current_return_date" value={editFormData.current_return_date} onChange={handleEditChange} className="edit-input" />
                       </div>
                     ) : (
                       item.current_name ? <span style={{fontSize: '12px'}}>{item.current_rent_date || '?'} <br/>~ {item.current_return_date || '미반납'}</span> : '-'
                     )}
                   </td>
+                  
+                  {/* 비고 영역 */}
                   <td>
                     {isEditing ? (
-                      <input type="date" max="9999-12-31" name="current_expected_date" value={editFormData.current_expected_date} onChange={handleEditChange} className="edit-input" />
+                      <div className="edit-cell">
+                        <span style={{fontSize:'11px'}}>비고</span>
+                        <input name="current_remark" placeholder="비고 입력" value={editFormData.current_remark} onChange={handleEditChange} className="edit-input" />
+                      </div>
                     ) : (
-                      <span style={{fontSize: '12px', color: '#d97706', fontWeight: 'bold'}}>{item.current_expected_date || '-'}</span>
+                      item.current_name ? (
+                        <span style={{fontSize: '12px'}}>{item.current_remark || '-'}</span>
+                      ) : '-'
                     )}
                   </td>
-                  <td>
-                    {isEditing ? (
-                      <input name="current_remark" placeholder="비고 입력" value={editFormData.current_remark} onChange={handleEditChange} className="edit-input" />
-                    ) : (
-                      <span style={{fontSize: '12px'}}>{item.current_remark || '-'}</span>
-                    )}
-                  </td>
+                  
                   <td>
                     {isEditing ? (
                       <div className="edit-cell">
@@ -325,11 +332,13 @@ function NotebookRental() {
                   <td>
                     {isNextEditing ? (
                       <div className="edit-cell">
+                        <span style={{fontSize:'11px'}}>팀명/성함</span>
                         <input name="next_team" placeholder="팀명" value={editNextFormData.next_team} onChange={handleNextEditChange} className="edit-input" />
                         <input name="next_name" placeholder="이름" value={editNextFormData.next_name} onChange={handleNextEditChange} className="edit-input" />
-                        <span style={{fontSize:'11px'}}>대여/반납일</span>
+                        <span style={{fontSize:'11px'}}>대여/반납 일정</span>
                         <input type="date" max="9999-12-31" name="next_rent_date" value={editNextFormData.next_rent_date} onChange={handleNextEditChange} className="edit-input" />
                         <input type="date" max="9999-12-31" name="next_return_date" value={editNextFormData.next_return_date} onChange={handleNextEditChange} className="edit-input" />
+                        <span style={{fontSize:'11px'}}>비고</span>
                         <input name="next_remark" placeholder="비고 입력" value={editNextFormData.next_remark} onChange={handleNextEditChange} className="edit-input" />
                       </div>
                     ) : (
@@ -337,7 +346,9 @@ function NotebookRental() {
                         <div style={{fontSize: '12px'}}>
                           {item.next_team} <b>{item.next_name}</b><br/>
                           <span style={{color: '#868e96'}}>{item.next_rent_date || '?'} ~ {item.next_return_date || '?'}</span><br/>
-                          <span style={{color: '#adb5bd', marginTop: '2px', display: 'inline-block'}}>{item.next_remark || '비고 없음'}</span>
+                          {item.next_remark && (
+                            <span style={{color: '#adb5bd', marginTop: '2px', display: 'inline-block'}}>{item.next_remark}</span>
+                          )}
                         </div>
                       ) : <span style={{color:'#adb5bd'}}>예약 없음</span>
                     )}
@@ -370,8 +381,17 @@ function NotebookRental() {
           <h2 style={{margin: '0 0 5px 0', color: '#2c3e50'}}>과거 대여 기록</h2>
           <p style={{margin: 0, fontSize: '14px', color: '#868e96'}}>반납이 완료된 기기 내역 (최신순)</p>
         </div>
-        <div className="history-filter">
-          <select value={historyFilter} onChange={(e) => setHistoryFilter(e.target.value)}>
+        
+        {/* 💡 검색어 입력칸과 기존 필터 드롭다운을 가로로 배치 */}
+        <div className="history-filter" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <input 
+            type="text" 
+            placeholder="이름 검색" 
+            value={searchName} 
+            onChange={(e) => setSearchName(e.target.value)}
+            style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #dee2e6', outline: 'none', fontSize: '13px', fontFamily: 'inherit' }}
+          />
+          <select value={historyFilter} onChange={(e) => setHistoryFilter(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #dee2e6', outline: 'none', fontSize: '13px', fontFamily: 'inherit', cursor: 'pointer' }}>
             <option value="All">전체 기기 보기</option>
             {['01','02','03','04','05','06','07','08','09'].map(id => <option key={id} value={id}>{id}번 기기만</option>)}
           </select>
@@ -386,8 +406,7 @@ function NotebookRental() {
               <th>팀명</th>
               <th>이름</th>
               <th>대여 일자</th>
-              <th>원래 반납일자</th>
-              <th>실제 반납일자</th>
+              <th>반납 일자</th>
               <th>비고</th>
               <th>관리</th>
             </tr>
@@ -398,9 +417,9 @@ function NotebookRental() {
                 <tr key={h.id}>
                   <td><strong>{h.notebook_id}</strong></td>
                   <td>{h.team}</td>
-                  <td>{h.name}</td>
+                  {/* 검색한 이름이 더 잘 보이도록 굵게(b 태그) 표시 */}
+                  <td><b>{h.name}</b></td>
                   <td>{h.rent_date || '-'}</td>
-                  <td style={{color: '#868e96'}}>{h.original_return_date || '-'}</td>
                   <td style={{color: '#c92a2a', fontWeight: 'bold'}}>{h.return_date || '-'}</td>
                   <td>{h.remark || '-'}</td>
                   <td>
@@ -412,7 +431,7 @@ function NotebookRental() {
               ))
             ) : (
               <tr>
-                <td colSpan="8" style={{padding: '30px', color: '#adb5bd'}}>해당 기기의 과거 반납 기록이 없습니다.</td>
+                <td colSpan="7" style={{padding: '30px', color: '#adb5bd'}}>검색 조건에 맞는 과거 반납 기록이 없습니다.</td>
               </tr>
             )}
           </tbody>
@@ -446,12 +465,6 @@ function NotebookRental() {
               <label>반납 일자</label>
               <input type="date" max="9999-12-31" name="return_date" value={formData.return_date} onChange={handleModalChange} />
             </div>
-            {modalType === 'current' && (
-              <div className="form-group">
-                <label>반납 예정 일자</label>
-                <input type="date" max="9999-12-31" name="expected_date" value={formData.expected_date} onChange={handleModalChange} />
-              </div>
-            )}
             <div className="form-group">
               <label>비고</label>
               <input type="text" name="remark" value={formData.remark} onChange={handleModalChange} placeholder="특이사항 입력" />
