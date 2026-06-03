@@ -36,7 +36,7 @@ function WindowsSetup() {
         </div>
       </section>
 
-      {/* ■ 2. 셋팅 순서 (데스크탑 기준) - 수정된 부분 */}
+      {/* ■ 2. 셋팅 순서 (데스크탑 기준) */}
       <section id="win2" className="guide-section">
         <h2 className="section-title">■ 2. 셋팅 순서 <span style={{ fontSize: '14px', color: '#1a73e8' }}>(데스크탑 기준)</span></h2>
 
@@ -95,40 +95,65 @@ function WindowsSetup() {
         </div>
       </section>
 
-      {/* ■ 3. 노트북 Azure AD 셋팅 */}
+      {/* ■ 3. 노트북 Azure AD 셋팅 - 수정된 부분 */}
       <section id="win3" className="guide-section">
         <h2 className="section-title">■ 3. 노트북 Azure AD 셋팅</h2>
 
         <div className="guide-card">
           <ul>
-            <li><span className="badge action">Step 1</span> OS 설치</li>
-            <li><span className="badge action">Step 2</span> 윈도우 업데이트 확인</li>
+            <li>
+              <span className="badge action">Step 1</span> OS 설치
+            </li>
 
             <li>
-              <span className="badge action">Step 3</span> 해당 브랜드 업데이트 프로그램 실행
+              <span className="badge action">Step 2</span> 셋팅정보(MAC) 확인
+              <div className="sub-bullet">
+                • <b>셋팅정보 확인:</b> CPU, 사용자이름, 자산번호, 상세 스펙, 저장매체 S/N, MAC
+              </div>
+            </li>
+
+            <li>
+              <span className="badge action">Step 3</span> 프로그램 설치
+              <div className="sub-bullet">• ODT (Office 365)</div>
+              <div className="sub-bullet">• 보안프로그램 (DLP, EDR)</div>
+              <div className="sub-bullet">• NEXON 인증서</div>
+            </li>
+
+            <li>
+              <span className="badge action">Step 4</span> 외부 인터넷 확인
+              <div className="sub-bullet">• 웹 브라우저 실행 후 www.naver.com 접속 정상 여부 확인</div>
+            </li>
+
+            <li>
+              <span className="badge action">Step 5</span> 윈도우 설정 셋팅
+              <div className="sub-bullet">• 정품인증 및 윈도우 업데이트 진행</div>
+              <div className="sub-bullet">• 배경화면 기본으로 설정</div>
+            </li>
+
+            <li>
+              <span className="badge action">Step 6</span> 해당 브랜드 업데이트 프로그램 실행
               <div className="sub-bullet">• 삼성: 삼성 디바이스 케어</div>
               <div className="sub-bullet">• LG: 엘지 업데이트</div>
               <div className="sub-bullet">• 레노버: 레노버 밴티지</div>
             </li>
 
-            <li><span className="badge action">Step 4</span> Office 365</li>
-            <li><span className="badge action">Step 5</span> 정품인증</li>
-            <li><span className="badge action">Step 6</span> 보안프로그램</li>
-            <li><span className="badge action">Step 7</span> 셋팅정보 확인</li>
-
             <li>
-              <span className="badge action">Step 8</span> Azure AD 패스워드 설정
+              <span className="badge action">Step 7</span> Azure AD 패스워드 설정
               <div className="sub-bullet"><span className="badge warn">확인</span> nexon!1234</div>
             </li>
 
             <li>
-              <span className="badge action">Step 9</span> 사용자추가
+              <span className="badge action">Step 8</span> 사용자추가
               <div className="sub-bullet"><span className="badge system">계정</span> - @nexon.co.kr</div>
             </li>
 
-            <li><span className="badge action">Step 10</span> 셋팅정보 확인</li>
-            <li><span className="badge action">Step 11</span> PC이름변경 <span className="note">(도메인-) = 자산번호</span></li>
-            <li><span className="badge action">Step 12</span> 와이파이 정보 삭제</li>
+            <li>
+              <span className="badge action">Step 9</span> PC이름변경 <span className="note">(도메인-) = 자산번호</span>
+            </li>
+
+            <li>
+              <span className="badge action">Step 10</span> 와이파이 정보 삭제
+            </li>
           </ul>
 
           <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#fef7e0', borderRadius: '8px', fontSize: '13px' }}>
