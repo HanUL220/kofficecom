@@ -28,7 +28,7 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <div className="mobile-container">
         
         {/* 상단 헤더 */}

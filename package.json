@@ -1,7 +1,7 @@
 {
   "name": "kofficecom",
   "version": "0.1.0",
-  "homepage": "http://asapguide.kro.kr",
+  "homepage": "https://hanul220.github.io/kofficecom",
   "dependencies": {
     "@supabase/supabase-js": "^2.107.0",
     "@testing-library/dom": "^10.4.1",
