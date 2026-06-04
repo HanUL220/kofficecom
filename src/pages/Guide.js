@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router-dom';
+
 function Guide() {
   return (
     <main className="content">
       
-      {/* 🚀 빠른 이동 내비게이션 (새로 추가된 부분!) */}
+      {/* 🚀 빠른 이동 내비게이션 */}
       <nav className="quick-nav">
         <a href="#sec1" className="nav-chip">1. 소모품</a>
         <a href="#sec2" className="nav-chip">2. 공용물품</a>
@@ -17,46 +19,68 @@ function Guide() {
         <p className="intro-text">"안녕하세요! 어떤 일로 오셨을까요?"</p>
       </div>
 
-      {/* ■ 1. 소모품 처리 (id="sec1" 추가) */}
+      {/* ■ 1. 소모품 처리 */}
       <section id="sec1" className="guide-section">
         <h2 className="section-title">■ 1. 소모품 처리</h2>
         
         <div className="guide-card">
-          <h3>[케이블류 추가 지급]</h3>
+          <h3>[건전지 / 멀티탭 / 육각렌치]</h3>
           <ul>
             <li><span className="badge speak">말하기</span> "어떤 용도로 필요하신지 사유를 알 수 있을까요?"</li>
-            <li><span className="badge action">행 동</span> 사유 확인 후 지급 <span className="note">(※ 개인 자산 사용 용도로는 대여 불가)</span></li>
+            <li><span className="badge action">행 동</span> 사유 확인 후, 사내 자산에 사용하는 경우에 한해 지원 <span className="note">(※ 건전지 종류: AA, AAA, CR2032)</span></li>
           </ul>
         </div>
 
         <div className="guide-card">
-          <h3>[소모품 교체 (키보드, 마우스, 케이블, 젠더 등)]</h3>
+          <h3>[케이블류 교체 (DP, HDMI, LAN, 파워, USB 연장 등)]</h3>
           <ul>
-            <li><span className="badge speak">말하기</span> "먼저 저희가 기기(케이블) 작동 상태를 확인한 후 교체해 드리겠습니다."</li>
-            <li><span className="badge action">행 동</span> 기존 물품 상태 확인 후 새 물품 찾아오기</li>
-            <li><span className="badge speak">말하기</span> "여기에 팀명과 성함을 적어주시겠어요?" (임직원이 직접 키보드로 작성)</li>
-            <li><span className="badge system">전 산</span> 나머지 관리대장 빈칸은 내가 직접 작성</li>
+            <li><span className="badge speak">말하기</span> "어떤 용도로 필요하신지 사유를 알 수 있을까요?"</li>
+            <li><span className="badge action">행 동</span> 1대1 교체 지원 원칙 <span className="note">(※ 교체 시 고장 여부 즉시 확인 필요)</span></li>
+            <li><span className="badge warn">안 내</span> 모니터가 사내(NK) 자산일 경우에만 케이블 지원 가능 (개인 자산에는 지원 불가)</li>
+          </ul>
+        </div>
+
+        {/* 수정된 부분: 입력장치 사유 묻기 추가 */}
+        <div className="guide-card">
+          <h3>[입력장치 교체 (마우스, 마우스패드, 키보드, 와콤 펜심)]</h3>
+          <ul>
+            <li><span className="badge speak">말하기</span> "어떤 용도로 필요하신지 사유를 알 수 있을까요?"</li>
+            <li><span className="badge action">행 동</span> 1대1 교체 지원 원칙 <span className="note">(※ 교체 시 고장 여부 즉시 확인 필요)</span></li>
+            <li><span className="badge system">전 산</span> 기존에 지급받은 사내 물품이 있는지 확인 <span className="note">(※ 개인 물품을 사용하다 고장나서 교체하러 오는 경우 방지)</span></li>
+            <li><span className="badge speak">말하기</span> 기존 물품을 분실하셨다고 할 경우, 분실 방지 관련 안내 진행</li>
+          </ul>
+        </div>
+
+        {/* 수정된 부분: 젠더류 사유 묻기 추가 */}
+        <div className="guide-card">
+          <h3>[젠더류 교체 (USB to LAN, USB TYPE-C)]</h3>
+          <ul>
+            <li><span className="badge speak">말하기</span> "어떤 용도로 필요하신지 사유를 알 수 있을까요?"</li>
+            <li><span className="badge action">확 인</span> 사용하려는 노트북이 메인 장비인지 확인 후 교체 지원 <span className="note">(※ 공용장비, 추가장비는 지원 불가 / Azure 설치)</span></li>
+            <li><span className="badge speak">안 내</span> 교체 지원 시 맥(Mac) 등록 안내 필요</li>
+            <li>
+              <span className="badge system">전 산</span> 웹오피스포털 - NCSR을 통해 직접 신청하도록 안내
+              <div className="sub-bullet"><span className="badge warn">참 고</span> 1달 동안 미사용 시 재신청이 필요할 수 있음을 안내</div>
+            </li>
           </ul>
         </div>
 
         <div className="guide-card">
-          <h3>[기타 추가 지급]</h3>
+          <h3>[가구 및 비품 (받침대/쿠션, 옷걸이, 헤드레스트)]</h3>
           <ul>
-            <li><span className="badge speak">말하기</span> "어디에 사용하실 예정이신가요?"</li>
-            <li><span className="badge system">전 산</span> 사용처 듣고 판단 (회의실 등 공용이면 비고란 작성 / 개인적 사용이면 비고란 작성 X)</li>
+            <li><span className="badge action">확 인</span> 업무요청게시판을 통해 사전 안내를 받고 방문하신 경우에 지원 <span className="note">(※ 모니터/발 받침대, 발 받침대 쿠션 등)</span></li>
           </ul>
         </div>
 
         <div className="guide-card">
-          <h3>[발받침대 / 쿠션 지급]</h3>
+          <h3>[박스테이프]</h3>
           <ul>
-            <li><span className="badge speak">말하기</span> "발받침대와 쿠션 둘 다 필요하신가요?"</li>
-            <li><span className="badge action">행 동</span> 답변에 따라 추가 지급 (보통 추가 지급함)</li>
+            <li><span className="badge action">행 동</span> 임시 사용 목적으로 대여하시는 경우가 대부분이므로, 지급 형태와 무관하게 지원</li>
           </ul>
         </div>
       </section>
 
-      {/* ■ 2. 공용 물품 대여 및 반납 (id="sec2" 추가) */}
+      {/* ■ 2. 공용 물품 대여 및 반납 */}
       <section id="sec2" className="guide-section">
         <h2 className="section-title">■ 2. 공용 물품 대여 및 반납</h2>
         
@@ -143,7 +167,7 @@ function Guide() {
         </div>
       </section>
 
-      {/* ■ 3. 직책자 디바이스 (자급제) (id="sec3" 추가) */}
+      {/* ■ 3. 직책자 디바이스 (자급제) */}
       <section id="sec3" className="guide-section">
         <h2 className="section-title">■ 3. 직책자 디바이스 (자급제)</h2>
         <div className="guide-card">
@@ -156,7 +180,7 @@ function Guide() {
         </div>
       </section>
 
-      {/* ■ 4. PC류 입고 (반납) (id="sec4" 추가) */}
+      {/* ■ 4. PC류 입고 (반납) */}
       <section id="sec4" className="guide-section">
         <h2 className="section-title">■ 4. PC류 입고 (반납)</h2>
         
@@ -181,7 +205,7 @@ function Guide() {
         </div>
       </section>
 
-      {/* ■ 5. 모바일 기기 대여 및 반납 (id="sec5" 추가) */}
+      {/* ■ 5. 모바일 기기 대여 및 반납 */}
       <section id="sec5" className="guide-section">
         <h2 className="section-title">■ 5. 모바일 기기 대여 및 반납</h2>
         
