@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/kofficecom/static/css/main.a0be0767.css",
-    "main.js": "/kofficecom/static/js/main.ea0186a2.js",
+    "main.js": "/kofficecom/static/js/main.5b1a2963.js",
     "static/js/453.95c7e4d0.chunk.js": "/kofficecom/static/js/453.95c7e4d0.chunk.js",
     "index.html": "/kofficecom/index.html",
     "main.a0be0767.css.map": "/kofficecom/static/css/main.a0be0767.css.map",
-    "main.ea0186a2.js.map": "/kofficecom/static/js/main.ea0186a2.js.map",
+    "main.5b1a2963.js.map": "/kofficecom/static/js/main.5b1a2963.js.map",
     "453.95c7e4d0.chunk.js.map": "/kofficecom/static/js/453.95c7e4d0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a0be0767.css",
-    "static/js/main.ea0186a2.js"
+    "static/js/main.5b1a2963.js"
   ]
 }
