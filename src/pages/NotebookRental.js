@@ -5,21 +5,18 @@ import Swal from 'sweetalert2';
 function NotebookRental() {
   const [notebooks, setNotebooks] = useState([]);
   const [history, setHistory] = useState([]);
-  
-  // 검색 및 필터 상태 관리
   const [historyFilter, setHistoryFilter] = useState('All');
   const [searchName, setSearchName] = useState(''); 
-  
   const [loading, setLoading] = useState(true);
 
-  // 모달(우측 상단 등록창) 상태 관리
+  // 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(''); 
   const [formData, setFormData] = useState({
     id: '01', team: '', name: '', rent_date: '', return_date: '', remark: ''
   });
 
-  // 인라인 수정 상태 관리 (현재, 다음)
+  // 인라인 수정 상태 관리
   const [editingRowId, setEditingRowId] = useState(null);
   const [editFormData, setEditFormData] = useState({});
   const [editingNextRowId, setEditingNextRowId] = useState(null);
@@ -40,6 +37,52 @@ function NotebookRental() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  /* ============================
+     💡 주말 제외 영업일 계산 로직
+  ============================ */
+  const calculateGapDays = (returnDate, nextRentDate) => {
+    if (!returnDate || !nextRentDate) return null;
+    
+    const start = new Date(returnDate);
+    const end = new Date(nextRentDate);
+    
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+
+    if (start > end) return -1; // 반납일보다 예약일이 빠른 경우 (오류)
+    if (start.getTime() === end.getTime()) return 0; // 당일 반납/대여
+
+    let count = 0;
+    let cur = new Date(start);
+    
+    // 시작일 다음날부터 종료일까지 돌면서 주말(0:일, 6:토) 제외하고 카운트
+    while (cur < end) {
+      cur.setDate(cur.getDate() + 1);
+      const day = cur.getDay();
+      if (day !== 0 && day !== 6) {
+        count++;
+      }
+    }
+    return count;
+  };
+
+  // 뱃지 렌더링 함수
+  const renderGapBadge = (currentReturn, nextRent) => {
+    const gap = calculateGapDays(currentReturn, nextRent);
+    if (gap === null) return null;
+
+    if (gap < 0) {
+      return <div style={{marginTop: '4px'}}><span style={{padding: '3px 6px', backgroundColor: '#ffe3e3', color: '#c92a2a', borderRadius: '4px', fontSize: '11px', fontWeight: 'bold'}}>🚨 일정 꼬임 (확인)</span></div>;
+    }
+    if (gap === 0) {
+      return <div style={{marginTop: '4px'}}><span style={{padding: '3px 6px', backgroundColor: '#ffe3e3', color: '#c92a2a', borderRadius: '4px', fontSize: '11px', fontWeight: 'bold'}}>🚨 즉시 와이핑 (당일)</span></div>;
+    }
+    if (gap === 1) {
+      return <div style={{marginTop: '4px'}}><span style={{padding: '3px 6px', backgroundColor: '#fff3cd', color: '#d97706', borderRadius: '4px', fontSize: '11px', fontWeight: 'bold'}}>⚡ 빠른 와이핑 (1일)</span></div>;
+    }
+    return <div style={{marginTop: '4px'}}><span style={{padding: '3px 6px', backgroundColor: '#e6fcf5', color: '#0ca678', borderRadius: '4px', fontSize: '11px', fontWeight: 'bold'}}>✅ 전환 대기 ({gap}일 여유)</span></div>;
+  };
 
   /* ============================
      우측 상단 모달 등록 기능
@@ -135,7 +178,7 @@ function NotebookRental() {
   };
 
   /* ============================
-     반납, 예약 전환 및 기록 삭제 (SweetAlert2)
+     반납, 예약 전환 및 기록 삭제 
   ============================ */
   const handleReturnComplete = (notebook) => {
     Swal.fire({
@@ -150,13 +193,12 @@ function NotebookRental() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         
-        // 💡 무조건 대한민국 표준시(KST)로 정확한 오늘 날짜 구하기
+        // KST 오늘 날짜 구하기
         const now = new Date();
         const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
         const kst = new Date(utc + (9 * 60 * 60 * 1000));
         const todayKST = `${kst.getFullYear()}-${String(kst.getMonth() + 1).padStart(2, '0')}-${String(kst.getDate()).padStart(2, '0')}`;
 
-        // 원래 반납일자가 비어있다면 오늘 날짜(KST)로 대체!
         const finalReturnDate = notebook.current_return_date || todayKST;
 
         const { error: historyError } = await supabase.from('rental_history').insert([{
@@ -164,7 +206,7 @@ function NotebookRental() {
           team: notebook.current_team, 
           name: notebook.current_name,
           rent_date: notebook.current_rent_date, 
-          return_date: finalReturnDate, // 처리된 반납일자 저장
+          return_date: finalReturnDate, 
           remark: notebook.current_remark
         }]);
         
@@ -354,6 +396,10 @@ function NotebookRental() {
                         <div style={{fontSize: '12px'}}>
                           {item.next_team} <b>{item.next_name}</b><br/>
                           <span style={{color: '#868e96'}}>{item.next_rent_date || '?'} ~ {item.next_return_date || '?'}</span><br/>
+                          
+                          {/* 💡 새로 추가된 와이핑 뱃지 영역 */}
+                          {renderGapBadge(item.current_return_date, item.next_rent_date)}
+
                           {item.next_remark && (
                             <span style={{color: '#adb5bd', marginTop: '2px', display: 'inline-block'}}>{item.next_remark}</span>
                           )}
